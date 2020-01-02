@@ -23,6 +23,12 @@ To check for broken links, use Alt+L. This will open a new column to the right o
 
 ## Changes
 
+### 0.3.1
+
+- Fixes for security vulnerabilities in dependencies
+- Fixes to the regex that finds links containing country codes
+- Fixes to prevent URL truncation when the URL contains '()'
+
 ### 0.1.5
 
 - Added country code warnings to the output window for Alt+L checking
