@@ -22,6 +22,8 @@ import brokenLink = require('broken-link');
 // For checking relative URIs against the local file system
 import path = require('path');
 import fs = require('fs');
+import { URL } from 'url';
+
 
 //Interface for links
 interface Link {
@@ -87,6 +89,8 @@ function generateLinkReport() {
     let outputChannel = window.createOutputChannel("Checked links");
     // Show the output channel in column three
     outputChannel.show(ViewColumn.Three);
+    // Get the config settings
+    let config = workspace.getConfiguration('linkchecker');
     
     // Get all Markdown style lnks in the document
     getLinks(document).then((links) => {
@@ -126,7 +130,20 @@ function generateLinkReport() {
                         if(fs.existsSync(fullPath)) {
                             outputChannel.appendLine(`Info: ${link.address} on line ${lineNumber}.`);
                         } else {
-                            outputChannel.appendLine(`Error: ${link.address} on line ${lineNumber} does not exist.`);
+                            // Maybe it's a relative path for the http address that the web site is published to...
+                            if(config.httpPublishPrefix) {
+                                // Check if prepending the publish prefix lets it resolve
+                                // NOTE: The replace regex removes leading / from relative links. If you don't, it
+                                //       assumes the root of the URL. Turning a prefix of http://mysite/root to http://mysite.
+                                let absoluteAddress = new URL(link.address.replace(/^(\/)+/, ""), config.httpPublishPrefix).href;
+                                brokenLink(absoluteAddress, {allowRedirects: true}).then((answer) => {
+                                    if(answer) {
+                                        outputChannel.appendLine(`Error: ${link.address} on line ${lineNumber} not found on local file system or at ${absoluteAddress}.`);
+                                    } else {
+                                        outputChannel.appendLine(`Info: ${link.address} on line ${lineNumber} found at ${absoluteAddress}.`);
+                                    }
+                                });
+                            }
                         }
                     } catch (error) {
                         // If there's an error, log the link
