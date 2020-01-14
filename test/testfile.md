@@ -11,7 +11,7 @@ How about a [reference style link?][refstyle]
 Or a [ftp link](ftp://microsoft.com).
 How about a relative link to [an existing file](./virtual-machines-linux-opensource.md). 
 
-What about a relative path to a file [that exists on the published site](/machine-learning/concept-enterprise-security) but not locally?
+What about a relative path to a file [that exists on the published site](/azure/machine-learning/concept-enterprise-security) but not locally?
 
 What if we have [something besides /en-us/?](http://Azure.com/en-gb/)
 

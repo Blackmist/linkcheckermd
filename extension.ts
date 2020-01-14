@@ -133,9 +133,7 @@ function generateLinkReport() {
                             // Maybe it's a relative path for the http address that the web site is published to...
                             if(config.httpPublishPrefix) {
                                 // Check if prepending the publish prefix lets it resolve
-                                // NOTE: The replace regex removes leading / from relative links. If you don't, it
-                                //       assumes the root of the URL. Turning a prefix of http://mysite/root to http://mysite.
-                                let absoluteAddress = new URL(link.address.replace(/^(\/)+/, ""), config.httpPublishPrefix).href;
+                                let absoluteAddress = new URL(link.address, config.httpPublishPrefix).href;
                                 brokenLink(absoluteAddress, {allowRedirects: true}).then((answer) => {
                                     if(answer) {
                                         outputChannel.appendLine(`Error: ${link.address} on line ${lineNumber} not found on local file system or at ${absoluteAddress}.`);
